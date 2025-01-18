@@ -1,0 +1,20 @@
+{
+  "name": "com.saber.editordiy",
+  "version": "0.0.1",
+  "displayName": "EditorWindowDIY",
+  "description": "\u4e00\u4e2a\u81ea\u5df1\u5c01\u88c5\u7684Luban\u63d2\u4ef6",
+  "keywords": [
+    "EditorWindowDIY",
+    "Saber"
+  ],
+  "author": {
+    "name": "EdwardLee",
+    "email": "szby1026@gamil.com",
+    "url": "https://github.com/SaberArtoriaFan/UnityEditorWindowDIY"
+  },
+  "repository": {
+    "url": "git@github.com:SaberArtoriaFan/UnityEditorWindowDIY.git",
+    "type": "git",
+    "revision": "0.0.1"
+  }
+}
