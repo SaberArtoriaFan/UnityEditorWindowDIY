@@ -14,15 +14,15 @@ using UnityEngine;
 namespace MonoHook
 {    
     [InitializeOnLoad]
-    internal class InspectorWindowHook
+    internal class ProjectBrowserHook
     {
-        public const string BackgroundPNGKey = "InspectorWindowHookBackgroundPath";
-        public const string BackgroundColorKey = "InspectorWindowHookBackgroundColor";
-        public const string OpenKey = "InspectorWindowHookOpen";
+        public const string BackgroundPNGKey = "ProjectBrowserHookBackgroundPath";
+        public const string BackgroundColorKey = "ProjectBrowserHookBackgroundColor";
+        public const string OpenKey = "ProjectBrowserHookOpen";
 
         private static MethodHook _hook;
 
-        static Type windowType = typeof(Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+        static Type windowType = typeof(Editor).Assembly.GetType("UnityEditor.ProjectBrowser");
         static Texture2D backgroundTexture;
         static Texture2D BackgroundTexture
         {
@@ -39,7 +39,7 @@ namespace MonoHook
         static Color color =default;
 
 
-        static InspectorWindowHook()
+        static ProjectBrowserHook()
         {
             Init();
         }
@@ -103,12 +103,12 @@ namespace MonoHook
         }
     }
 
-    internal class InspectorWindowHookSettingPanel : EditorWindow
+    internal class ProjectBrowserHookSettingPanel:EditorWindow
     {
-        [MenuItem("Window/编辑器DIY/InspectorWindow背景图设置")]
+        [MenuItem("Window/编辑器DIY/ProjectBrowser背景图设置")]
         static void Open()
         {
-            EditorWindow.GetWindow<InspectorWindowHookSettingPanel>().Show();
+            EditorWindow.GetWindow<ProjectBrowserHookSettingPanel>().Show();
         }
         Texture2D texture2D=null;
         string texturePath;
@@ -119,12 +119,12 @@ namespace MonoHook
             minSize = new Vector2(750, 500);
             maxSize = new Vector2(750, 500);
 
-            texturePath = EditorPrefs.GetString(InspectorWindowHook.BackgroundPNGKey, "");
+            texturePath = EditorPrefs.GetString(ProjectBrowserHook.BackgroundPNGKey, "");
             if (string.IsNullOrEmpty(texturePath) == false)
                 texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-            var colorStr= EditorPrefs.GetString(InspectorWindowHook.BackgroundColorKey, "#FFFFFF4B");
+            var colorStr= EditorPrefs.GetString(ProjectBrowserHook.BackgroundColorKey, "#FFFFFF4B");
             ColorUtility.TryParseHtmlString(colorStr, out color);
-            isOpen = EditorPrefs.GetBool(InspectorWindowHook.OpenKey, false);
+            isOpen = EditorPrefs.GetBool(ProjectBrowserHook.OpenKey, false);
 
         }
         private void OnGUI()
@@ -150,7 +150,7 @@ namespace MonoHook
                 {
                     texture2D = pic;
                     texturePath = tp;
-                    EditorPrefs.SetString(InspectorWindowHook.BackgroundPNGKey, tp);
+                    EditorPrefs.SetString(ProjectBrowserHook.BackgroundPNGKey, tp);
                     isChanged = true;
                 }
             }
@@ -161,7 +161,7 @@ namespace MonoHook
             if(tempColor != color)
             {
                 color = tempColor;
-                EditorPrefs.SetString(InspectorWindowHook.BackgroundColorKey, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
+                EditorPrefs.SetString(ProjectBrowserHook.BackgroundColorKey, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
                 isChanged = true;
             }
             EditorGUILayout.EndHorizontal();
@@ -172,16 +172,16 @@ namespace MonoHook
             if (open != isOpen)
             {
                 isOpen = open;
-                EditorPrefs.SetBool(InspectorWindowHook.OpenKey, isOpen);
+                EditorPrefs.SetBool(ProjectBrowserHook.OpenKey, isOpen);
                 isChanged = true;
             }
             EditorGUILayout.EndHorizontal();
             GUILayout.EndVertical();
             if(texture2D!=null)
-                GUI.DrawTexture(new Rect(width / 2, 0, width / 2, position.height), texture2D, ScaleMode.ScaleToFit, true, 0, color, 0, 0);
+                GUI.DrawTexture(new Rect(width/2,0, width/2,position.height), texture2D, ScaleMode.ScaleToFit, true, 0, color, 0, 0);
             GUILayout.EndHorizontal();
             if (isChanged)
-                InspectorWindowHook.Refresh();
+                ProjectBrowserHook.Refresh();
         }
         private string HandleDragAndDrop(Rect dropArea)
         {

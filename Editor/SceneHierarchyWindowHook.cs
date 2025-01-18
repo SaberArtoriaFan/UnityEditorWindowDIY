@@ -178,7 +178,7 @@ namespace MonoHook
             EditorGUILayout.EndHorizontal();
             GUILayout.EndVertical();
             if(texture2D!=null)
-                GUI.DrawTexture(new Rect(width/2,0, width/2,position.height), texture2D, ScaleMode.ScaleAndCrop, true, 0, color, 0, 0);
+                GUI.DrawTexture(new Rect(width / 2, 0, width / 2, position.height), texture2D, ScaleMode.ScaleToFit, true, 0, color, 0, 0);
             GUILayout.EndHorizontal();
             if (isChanged)
                 SceneHierarchyWindowHook.Refresh();
