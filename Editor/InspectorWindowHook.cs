@@ -12,9 +12,10 @@ using UnityEditor;
 using UnityEngine;
 
 namespace MonoHook
-{    
+{
+    [BackgroundWindow]
     [InitializeOnLoad]
-    internal class InspectorWindowHook
+    internal static class InspectorWindowHook
     {
         public const string BackgroundPNGKey = "InspectorWindowHookBackgroundPath";
         public const string BackgroundColorKey = "InspectorWindowHookBackgroundColor";
@@ -103,120 +104,5 @@ namespace MonoHook
         }
     }
 
-    internal class InspectorWindowHookSettingPanel : EditorWindow
-    {
-        [MenuItem("Window/编辑器DIY/InspectorWindow背景图设置")]
-        static void Open()
-        {
-            EditorWindow.GetWindow<InspectorWindowHookSettingPanel>().Show();
-        }
-        Texture2D texture2D=null;
-        string texturePath;
-        Color color = default;
-        bool isOpen = false;
-        private void OnEnable()
-        {
-            minSize = new Vector2(750, 500);
-            maxSize = new Vector2(750, 500);
-
-            texturePath = SettingPrefs.GetString(InspectorWindowHook.BackgroundPNGKey, "");
-            if (string.IsNullOrEmpty(texturePath) == false)
-                texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-            var colorStr= SettingPrefs.GetString(InspectorWindowHook.BackgroundColorKey, "#FFFFFF4B");
-            ColorUtility.TryParseHtmlString(colorStr, out color);
-            isOpen = SettingPrefs.GetBool(InspectorWindowHook.OpenKey, false);
-
-        }
-        private void OnGUI()
-        {
-            bool isChanged = false;
-            GUILayout.BeginHorizontal();
-            var width = position.width;
-            GUILayout.BeginVertical(GUILayout.Width(width/2-10));
-
-            GUILayout.Space(20);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("图片路径:", GUILayout.Width(60));  // 设置标签宽度
-            var tp = EditorGUILayout.TextField(texturePath);
-            // 处理拖放操作
-            Rect dropArea = GUILayoutUtility.GetLastRect();
-            var dragPath = HandleDragAndDrop(dropArea);
-            if (string.IsNullOrEmpty(dragPath) == false) tp = dragPath;
-            EditorGUILayout.EndHorizontal();
-            if (tp != texturePath&& File.Exists(tp))
-            {
-               var pic = AssetDatabase.LoadAssetAtPath<Texture2D>(tp);
-                if (pic != null)
-                {
-                    texture2D = pic;
-                    texturePath = tp;
-                    SettingPrefs.SetString(InspectorWindowHook.BackgroundPNGKey, tp);
-                    isChanged = true;
-                }
-            }
-            GUILayout.Space(10);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("图片颜色:", GUILayout.Width(60));  // 设置标签宽度
-            var tempColor = EditorGUILayout.ColorField(color);
-            if(tempColor != color)
-            {
-                color = tempColor;
-                SettingPrefs.SetString(InspectorWindowHook.BackgroundColorKey, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
-                isChanged = true;
-            }
-            EditorGUILayout.EndHorizontal();
-            GUILayout.Space(10);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("是否启用:", GUILayout.Width(60));  // 设置标签宽度
-            var open = EditorGUILayout.Toggle(isOpen);
-            if (open != isOpen)
-            {
-                isOpen = open;
-                SettingPrefs.SetBool(InspectorWindowHook.OpenKey, isOpen);
-                isChanged = true;
-            }
-            EditorGUILayout.EndHorizontal();
-            GUILayout.EndVertical();
-            if(texture2D!=null)
-                GUI.DrawTexture(new Rect(width / 2, 0, width / 2, position.height), texture2D, ScaleMode.ScaleToFit, true, 0, color, 0, 0);
-            GUILayout.EndHorizontal();
-            if (isChanged)
-                InspectorWindowHook.Refresh();
-        }
-        private string HandleDragAndDrop(Rect dropArea)
-        {
-            Event currentEvent = Event.current;
-            string result = "";
-            // 当拖拽图片到输入框区域时
-            if (dropArea.Contains(currentEvent.mousePosition))
-            {
-                if (currentEvent.type == EventType.DragUpdated || currentEvent.type == EventType.DragPerform)
-                {
-                    // 检查拖拽的内容是否是文件
-                    if (DragAndDrop.objectReferences.Length == 1 && DragAndDrop.objectReferences[0] is Texture2D)
-                    {
-                        DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-
-                        if (currentEvent.type == EventType.DragPerform)
-                        {
-                            // 获取拖拽的图片路径
-                            Texture2D draggedTexture = (Texture2D)DragAndDrop.objectReferences[0];
-                            string path = AssetDatabase.GetAssetPath(draggedTexture);
-                            result = path;
-                            DragAndDrop.AcceptDrag();
-                            Repaint();
-                        }
-                    }
-                    else
-                    {
-                        DragAndDrop.visualMode = DragAndDropVisualMode.Rejected;
-                    }
-
-                    currentEvent.Use();
-                }
-            }
-            return result;
-        }
-        }
 }
 #endif
