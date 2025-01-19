@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace MonoHook
 {
-    [BackgroundWindow]
+    [BackgroundWindow(2)]
     [InitializeOnLoad]
     internal static class ProjectBrowserHook
     {
@@ -47,7 +47,7 @@ namespace MonoHook
         public static void Refresh()
         {
             backgroundTexture = null;
-            ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, "#FFFFFF4B"), out color);
+            ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, SettingEditorWindow.DefaultColor), out color);
             var isOpen = SettingPrefs.GetBool(OpenKey, false);
             if (isOpen == false)
             {
@@ -67,7 +67,7 @@ namespace MonoHook
             if (_hook == null)
             {
                 if (BackgroundTexture == null) return;//没图片
-                ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, "#FFFFFF4B"), out color);
+                ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, SettingEditorWindow.DefaultColor), out color);
                 var srcMethod = windowType.GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
 
                 MethodInfo miReplacement = new Action<EditorWindow>(Replacement).Method;

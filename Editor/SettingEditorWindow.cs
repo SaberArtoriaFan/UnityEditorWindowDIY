@@ -14,7 +14,12 @@ namespace MonoHook
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public sealed class BackgroundWindowAttribute:Attribute
     {
+        public readonly int Layer;
 
+        public BackgroundWindowAttribute(int layer)
+        {
+            Layer = layer;
+        }
     }
     internal class SettingEditorWindow :EditorWindow
     {
@@ -23,12 +28,18 @@ namespace MonoHook
         {
             EditorWindow.GetWindow<SettingEditorWindow>().Show();
         }
+        public const string DefaultColor = "#FFFFFF23";
         Texture2D texture2D = null;
         string texturePath;
         Color color = default;
         bool isOpen = false;
         private int selectedTabIndex = 0; // 当前选中的页签索引
         private string[] tabNames ; // 页签名称
+        MethodInfo[] methodInfos;
+        string BackgroundPath => $"{tabNames[selectedTabIndex]}BackgroundPath";
+        string BackgroundColor => $"{tabNames[selectedTabIndex]}BackgroundColor";
+        string OpenKey => $"{tabNames[selectedTabIndex]}Open";
+
 
         private void OnEnable()
         {
@@ -37,19 +48,29 @@ namespace MonoHook
                 .GetTypes()  // 获取所有类型
                 .Where(t => t.GetCustomAttribute<BackgroundWindowAttribute>() != null)  // 查找有特性的类
                 .ToList();
+            classesWithAttribute.Sort((a, b) =>
+            {
+                var bw1 = a.GetCustomAttribute<BackgroundWindowAttribute>();
+                var bw2= b.GetCustomAttribute<BackgroundWindowAttribute>();
+                return bw1.Layer.CompareTo(bw2.Layer);
+            });
             tabNames = classesWithAttribute.Select(t => t.Name).ToArray();
+            methodInfos = new MethodInfo[tabNames.Length];
+            for ( int i = 0; i < tabNames.Length; i++)
+            {
+                methodInfos[i] = classesWithAttribute[i].GetMethod("Refresh",BindingFlags.Static|BindingFlags.Public|BindingFlags.NonPublic);
+            }
             selectedTabIndex = 0;
             InitItem();
         }
         void InitItem()
         {
-            string curr = tabNames[selectedTabIndex];
-            texturePath = SettingPrefs.GetString($"{curr}BackgroundPath", "");
+            texturePath = SettingPrefs.GetString(BackgroundPath, "");
             if (string.IsNullOrEmpty(texturePath) == false)
                 texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-            var colorStr = SettingPrefs.GetString($"{curr}BackgroundColor", "#FFFFFF4B");
+            var colorStr = SettingPrefs.GetString(BackgroundColor, DefaultColor);
             ColorUtility.TryParseHtmlString(colorStr, out color);
-            isOpen = SettingPrefs.GetBool($"{curr}Open", false);
+            isOpen = SettingPrefs.GetBool(OpenKey, false);
         }
         private void OnGUI()
         {   // 使用 EditorGUILayout.Toolbar 创建页签按钮
@@ -82,7 +103,7 @@ namespace MonoHook
                 {
                     texture2D = pic;
                     texturePath = tp;
-                    SettingPrefs.SetString(ConsoleWindowHook.BackgroundPNGKey, tp);
+                    SettingPrefs.SetString(BackgroundPath, tp);
                     isChanged = true;
                 }
             }
@@ -93,7 +114,7 @@ namespace MonoHook
             if (tempColor != color)
             {
                 color = tempColor;
-                SettingPrefs.SetString(ConsoleWindowHook.BackgroundColorKey, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
+                SettingPrefs.SetString(BackgroundColor, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
                 isChanged = true;
             }
             EditorGUILayout.EndHorizontal();
@@ -104,7 +125,7 @@ namespace MonoHook
             if (open != isOpen)
             {
                 isOpen = open;
-                SettingPrefs.SetBool(ConsoleWindowHook.OpenKey, isOpen);
+                SettingPrefs.SetBool(OpenKey, isOpen);
                 isChanged = true;
             }
             EditorGUILayout.EndHorizontal();
@@ -113,7 +134,9 @@ namespace MonoHook
                 GUI.DrawTexture(new Rect(width / 2, 0, width / 2, position.height), texture2D, ScaleMode.ScaleToFit, true, 0, color, 0, 0);
             GUILayout.EndHorizontal();
             if (isChanged)
-                ConsoleWindowHook.Refresh();
+            {
+                methodInfos[selectedTabIndex].Invoke(null, null);
+            }
         }
         private string HandleDragAndDrop(Rect dropArea)
         {
