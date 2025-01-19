@@ -40,7 +40,6 @@ namespace MonoHook
         string BackgroundColor => $"{tabNames[selectedTabIndex]}BackgroundColor";
         string OpenKey => $"{tabNames[selectedTabIndex]}Open";
 
-
         private void OnEnable()
         {
             // 获取当前程序集中所有被 BackgroundWindowAttribute 特性修饰的类
@@ -68,6 +67,8 @@ namespace MonoHook
             texturePath = SettingPrefs.GetString(BackgroundPath, "");
             if (string.IsNullOrEmpty(texturePath) == false)
                 texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            else
+                texture2D = null;
             var colorStr = SettingPrefs.GetString(BackgroundColor, DefaultColor);
             ColorUtility.TryParseHtmlString(colorStr, out color);
             isOpen = SettingPrefs.GetBool(OpenKey, false);
