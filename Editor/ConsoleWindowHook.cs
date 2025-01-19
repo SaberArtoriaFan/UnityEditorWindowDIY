@@ -14,15 +14,15 @@ using UnityEngine;
 namespace MonoHook
 {    
     [InitializeOnLoad]
-    internal class SceneHierarchyWindowHook
+    internal class ConsoleWindowHook
     {
-        public const string BackgroundPNGKey = "SceneHierarchyWindowHookBackgroundPath";
-        public const string BackgroundColorKey = "SceneHierarchyWindowHookBackgroundColor";
-        public const string OpenKey = "SceneHierarchyWindowHookOpen";
+        public const string BackgroundPNGKey = "ConsoleWindowHookBackgroundPath";
+        public const string BackgroundColorKey = "ConsoleWindowHookBackgroundColor";
+        public const string OpenKey = "ConsoleWindowHookOpen";
 
         private static MethodHook _hook;
 
-        static Type windowType = typeof(Editor).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
+        static Type windowType = typeof(Editor).Assembly.GetType("UnityEditor.ConsoleWindow");
         static Texture2D backgroundTexture;
         static Texture2D BackgroundTexture
         {
@@ -39,7 +39,7 @@ namespace MonoHook
         static Color color =default;
 
 
-        static SceneHierarchyWindowHook()
+        static ConsoleWindowHook()
         {
             Init();
         }
@@ -103,12 +103,12 @@ namespace MonoHook
         }
     }
 
-    internal class SceneHierarchyWindowHookSettingPanel:EditorWindow
+    internal class ConsoleWindowHookSettingPanel:EditorWindow
     {
-        [MenuItem("Window/编辑器DIY/SceneHierarchy背景图设置")]
+        [MenuItem("Window/编辑器DIY/ConsoleWindow背景图设置")]
         static void Open()
         {
-            EditorWindow.GetWindow<SceneHierarchyWindowHookSettingPanel>().Show();
+            EditorWindow.GetWindow<ConsoleWindowHookSettingPanel>().Show();
         }
         Texture2D texture2D=null;
         string texturePath;
@@ -119,12 +119,12 @@ namespace MonoHook
             minSize = new Vector2(750, 500);
             maxSize = new Vector2(750, 500);
 
-            texturePath = SettingPrefs.GetString(SceneHierarchyWindowHook.BackgroundPNGKey, "");
+            texturePath = SettingPrefs.GetString(ConsoleWindowHook.BackgroundPNGKey, "");
             if (string.IsNullOrEmpty(texturePath) == false)
                 texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-            var colorStr= SettingPrefs.GetString(SceneHierarchyWindowHook.BackgroundColorKey, "#FFFFFF4B");
+            var colorStr= SettingPrefs.GetString(ConsoleWindowHook.BackgroundColorKey, "#FFFFFF4B");
             ColorUtility.TryParseHtmlString(colorStr, out color);
-            isOpen = SettingPrefs.GetBool(SceneHierarchyWindowHook.OpenKey, false);
+            isOpen = SettingPrefs.GetBool(ConsoleWindowHook.OpenKey, false);
 
         }
         private void OnGUI()
@@ -150,7 +150,7 @@ namespace MonoHook
                 {
                     texture2D = pic;
                     texturePath = tp;
-                    SettingPrefs.SetString(SceneHierarchyWindowHook.BackgroundPNGKey, tp);
+                    SettingPrefs.SetString(ConsoleWindowHook.BackgroundPNGKey, tp);
                     isChanged = true;
                 }
             }
@@ -161,7 +161,7 @@ namespace MonoHook
             if(tempColor != color)
             {
                 color = tempColor;
-                SettingPrefs.SetString(SceneHierarchyWindowHook.BackgroundColorKey, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
+                SettingPrefs.SetString(ConsoleWindowHook.BackgroundColorKey, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
                 isChanged = true;
             }
             EditorGUILayout.EndHorizontal();
@@ -172,16 +172,16 @@ namespace MonoHook
             if (open != isOpen)
             {
                 isOpen = open;
-                SettingPrefs.SetBool(SceneHierarchyWindowHook.OpenKey, isOpen);
+                SettingPrefs.SetBool(ConsoleWindowHook.OpenKey, isOpen);
                 isChanged = true;
             }
             EditorGUILayout.EndHorizontal();
             GUILayout.EndVertical();
             if(texture2D!=null)
-                GUI.DrawTexture(new Rect(width / 2, 0, width / 2, position.height), texture2D, ScaleMode.ScaleToFit, true, 0, color, 0, 0);
+                GUI.DrawTexture(new Rect(width/2,0, width/2,position.height), texture2D, ScaleMode.ScaleToFit, true, 0, color, 0, 0);
             GUILayout.EndHorizontal();
             if (isChanged)
-                SceneHierarchyWindowHook.Refresh();
+                ConsoleWindowHook.Refresh();
         }
         private string HandleDragAndDrop(Rect dropArea)
         {

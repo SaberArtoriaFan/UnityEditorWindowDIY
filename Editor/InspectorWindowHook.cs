@@ -30,7 +30,7 @@ namespace MonoHook
             {
                 if(backgroundTexture == null)
                 {
-                    var path = EditorPrefs.GetString(BackgroundPNGKey, "Assets/background.png");
+                    var path = SettingPrefs.GetString(BackgroundPNGKey, "Assets/background.png");
                     backgroundTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
                 }
                 return backgroundTexture;
@@ -46,8 +46,8 @@ namespace MonoHook
         public static void Refresh()
         {
             backgroundTexture = null;
-            ColorUtility.TryParseHtmlString(EditorPrefs.GetString(BackgroundColorKey, "#FFFFFF4B"), out color);
-            var isOpen = EditorPrefs.GetBool(OpenKey, false);
+            ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, "#FFFFFF4B"), out color);
+            var isOpen = SettingPrefs.GetBool(OpenKey, false);
             if (isOpen == false)
             {
                 if (_hook != null) _hook.Uninstall();
@@ -61,12 +61,12 @@ namespace MonoHook
         }
         static void Init()
         {
-            var isOpen=EditorPrefs.GetBool(OpenKey, false);
+            var isOpen=SettingPrefs.GetBool(OpenKey, false);
             if (isOpen == false) return;
             if (_hook == null)
             {
                 if (BackgroundTexture == null) return;//没图片
-                ColorUtility.TryParseHtmlString(EditorPrefs.GetString(BackgroundColorKey, "#FFFFFF4B"), out color);
+                ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, "#FFFFFF4B"), out color);
                 var srcMethod = windowType.GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
 
                 MethodInfo miReplacement = new Action<EditorWindow>(Replacement).Method;
@@ -119,12 +119,12 @@ namespace MonoHook
             minSize = new Vector2(750, 500);
             maxSize = new Vector2(750, 500);
 
-            texturePath = EditorPrefs.GetString(InspectorWindowHook.BackgroundPNGKey, "");
+            texturePath = SettingPrefs.GetString(InspectorWindowHook.BackgroundPNGKey, "");
             if (string.IsNullOrEmpty(texturePath) == false)
                 texture2D = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-            var colorStr= EditorPrefs.GetString(InspectorWindowHook.BackgroundColorKey, "#FFFFFF4B");
+            var colorStr= SettingPrefs.GetString(InspectorWindowHook.BackgroundColorKey, "#FFFFFF4B");
             ColorUtility.TryParseHtmlString(colorStr, out color);
-            isOpen = EditorPrefs.GetBool(InspectorWindowHook.OpenKey, false);
+            isOpen = SettingPrefs.GetBool(InspectorWindowHook.OpenKey, false);
 
         }
         private void OnGUI()
@@ -150,7 +150,7 @@ namespace MonoHook
                 {
                     texture2D = pic;
                     texturePath = tp;
-                    EditorPrefs.SetString(InspectorWindowHook.BackgroundPNGKey, tp);
+                    SettingPrefs.SetString(InspectorWindowHook.BackgroundPNGKey, tp);
                     isChanged = true;
                 }
             }
@@ -161,7 +161,7 @@ namespace MonoHook
             if(tempColor != color)
             {
                 color = tempColor;
-                EditorPrefs.SetString(InspectorWindowHook.BackgroundColorKey, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
+                SettingPrefs.SetString(InspectorWindowHook.BackgroundColorKey, $"#{ColorUtility.ToHtmlStringRGBA(color)}");
                 isChanged = true;
             }
             EditorGUILayout.EndHorizontal();
@@ -172,7 +172,7 @@ namespace MonoHook
             if (open != isOpen)
             {
                 isOpen = open;
-                EditorPrefs.SetBool(InspectorWindowHook.OpenKey, isOpen);
+                SettingPrefs.SetBool(InspectorWindowHook.OpenKey, isOpen);
                 isChanged = true;
             }
             EditorGUILayout.EndHorizontal();
