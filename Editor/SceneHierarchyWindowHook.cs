@@ -62,11 +62,10 @@ namespace MonoHook
         }
         static void Init()
         {
-            var isOpen=SettingPrefs.GetBool(OpenKey, false);
+            var isOpen = SettingPrefs.GetBool(OpenKey, false);
             if (isOpen == false) return;
             if (_hook == null)
             {
-                if (BackgroundTexture == null) return;//没图片
                 ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, SettingEditorWindow.DefaultColor), out color);
                 var srcMethod = windowType.GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -81,18 +80,17 @@ namespace MonoHook
         [MethodImpl(MethodImplOptions.NoOptimization)]
         private static void Replacement(EditorWindow window)
         {
-            var originDepth = GUI.depth;
- 
+
             Proxyment(window);
-            if (BackgroundTexture != null)
-            {
-                //Debug.Log("深度" + originDepth);
-                // 获取窗口的大小
-                Rect windowRect = new Rect(0, 0, window.position.width, window.position.height);
-                // 绘制背景图片
-                GUI.depth = -10;
-                GUI.DrawTexture(windowRect, BackgroundTexture, ScaleMode.ScaleAndCrop,true,0, color,0,0);
-            }
+            if (BackgroundTexture == null)
+                return;
+            var originDepth = GUI.depth;
+
+            Rect windowRect = new Rect(0, 0, window.position.width, window.position.height);
+            // 绘制背景图片
+            GUI.depth = -10;
+            GUI.DrawTexture(windowRect, BackgroundTexture, ScaleMode.ScaleAndCrop, true, 0, color, 0, 0);
+
             GUI.depth = originDepth;
         }
 
