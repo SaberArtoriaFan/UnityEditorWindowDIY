@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-
-namespace MonoHook
+using MonoHook;
+namespace SaberDIYEditor.Editor
 {
     [AttributeUsage(AttributeTargets.Class )]
     [System.Diagnostics.Conditional("UNITY_EDITOR")]

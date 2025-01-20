@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace MonoHook
+namespace SaberDIYEditor.Editor
 {
     [BackgroundWindow(3)]
     [InitializeOnLoad]
@@ -23,7 +23,6 @@ namespace MonoHook
 
         private static MethodHook _hook;
 
-        static Type windowType = typeof(Editor).Assembly.GetType("UnityEditor.ConsoleWindow");
         static Texture2D backgroundTexture;
         static Texture2D BackgroundTexture
         {
@@ -66,6 +65,7 @@ namespace MonoHook
             if (isOpen == false) return;
             if (_hook == null)
             {
+                Type windowType = Type.GetType("UnityEditor.ConsoleWindow,UnityEditor");
                 ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, SettingEditorWindow.DefaultColor), out color);
                 var srcMethod = windowType.GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
 

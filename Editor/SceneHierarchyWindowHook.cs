@@ -10,8 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-
-namespace MonoHook
+using MonoHook;
+namespace SaberDIYEditor.Editor
 {
     [BackgroundWindow(0)]
     [InitializeOnLoad]
@@ -23,7 +23,6 @@ namespace MonoHook
 
         private static MethodHook _hook;
 
-        static Type windowType = typeof(Editor).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
         static Texture2D backgroundTexture;
         static Texture2D BackgroundTexture
         {
@@ -66,6 +65,8 @@ namespace MonoHook
             if (isOpen == false) return;
             if (_hook == null)
             {
+                Type windowType = Type.GetType("UnityEditor.SceneHierarchyWindow,UnityEditor");
+
                 ColorUtility.TryParseHtmlString(SettingPrefs.GetString(BackgroundColorKey, SettingEditorWindow.DefaultColor), out color);
                 var srcMethod = windowType.GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
 
