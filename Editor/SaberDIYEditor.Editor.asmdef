@@ -2,7 +2,7 @@
     "name": "SaberDIYEditor.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:f16892c9e5f7c3d4f9f814d485a4ce71"
+        "GUID:40f13b6170c4b5548a2a2165454a1332"
     ],
     "includePlatforms": [
         "Editor"
