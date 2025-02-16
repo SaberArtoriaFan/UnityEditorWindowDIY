@@ -31,9 +31,9 @@ namespace MonoHook
             if(File.Exists(SettingSavePath)==false)
             {
                 SettingInfo tsi=new SettingInfo ();
-                File.WriteAllText(SettingSavePath,Newtonsoft.Json.JsonConvert.SerializeObject(tsi));
+                File.WriteAllText(SettingSavePath,JsonUtility.ToJson(tsi));
             }
-            SettingInfo si= Newtonsoft.Json.JsonConvert.DeserializeObject<SettingInfo>(File.ReadAllText(SettingSavePath));
+            SettingInfo si= JsonUtility.FromJson< SettingInfo>(File.ReadAllText(SettingSavePath));
             strDict = new Dictionary<string, string>();
             intDict = new Dictionary<string, int>();
             foreach(var v in si.arr)
@@ -53,7 +53,7 @@ namespace MonoHook
             foreach(var v in intDict)
                 list.Add(new SettingItem() { key=v.Key, value_Int = v.Value });
             SettingInfo si= new SettingInfo() { arr=list.ToArray()};
-            File.WriteAllText(SettingSavePath, Newtonsoft.Json.JsonConvert.SerializeObject(si));
+            File.WriteAllText(SettingSavePath, JsonUtility.ToJson(si));
         }
         static void CheckInit()
         {

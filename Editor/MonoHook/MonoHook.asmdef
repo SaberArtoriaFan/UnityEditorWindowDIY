@@ -1,12 +1,8 @@
 {
-    "name": "SaberDIYEditor.Editor",
+    "name": "MonoHook",
     "rootNamespace": "",
-    "references": [
-        "GUID:40f13b6170c4b5548a2a2165454a1332"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
