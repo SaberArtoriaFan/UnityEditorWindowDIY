@@ -42,7 +42,7 @@ To set up and use this tool, follow the steps below:
 
 ## 🔧 Compatibility
 
-This codebase is based on Unity version 6000.1.0b2, tested with Unity 2021. In theory, **MonoHook** should support any Unity version compatible with it
+This codebase is based on Unity version 6000.1.0b2, tested with Unity 2021. In theory, this repository should support any Unity version compatible with **MonoHook**
 
 ---
 
