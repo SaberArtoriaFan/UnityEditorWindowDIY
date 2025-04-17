@@ -23,7 +23,7 @@ namespace SaberDIYEditor.Editor
     }
     internal class SettingEditorWindow :EditorWindow
     {
-        [MenuItem("Window/编辑器DIY/Setting")]
+        [MenuItem("Window/EditorWindow_DIY/Setting")]
         static void Open()
         {
             EditorWindow.GetWindow<SettingEditorWindow>().Show();
@@ -90,7 +90,7 @@ namespace SaberDIYEditor.Editor
 
             GUILayout.Space(20);
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("图片路径:", GUILayout.Width(60));  // 设置标签宽度
+            EditorGUILayout.LabelField("Pic_Path:", GUILayout.Width(60));  // 设置标签宽度
             var tp = EditorGUILayout.TextField(texturePath);
             // 处理拖放操作
             Rect dropArea = GUILayoutUtility.GetLastRect();
@@ -110,7 +110,7 @@ namespace SaberDIYEditor.Editor
             }
             GUILayout.Space(10);
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("图片颜色:", GUILayout.Width(60));  // 设置标签宽度
+            EditorGUILayout.LabelField("Color:", GUILayout.Width(60));  // 设置标签宽度
             var tempColor = EditorGUILayout.ColorField(color);
             if (tempColor != color)
             {
@@ -121,7 +121,7 @@ namespace SaberDIYEditor.Editor
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(10);
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("是否启用:", GUILayout.Width(60));  // 设置标签宽度
+            EditorGUILayout.LabelField("IsEnable:", GUILayout.Width(60));  // 设置标签宽度
             var open = EditorGUILayout.Toggle(isOpen);
             if (open != isOpen)
             {
