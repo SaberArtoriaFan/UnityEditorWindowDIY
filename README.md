@@ -34,7 +34,7 @@ To set up and use this tool, follow the steps below:
    ![Image Loading](img/2.png)
 
 2. **Step 2**  
-   Set the correct Unity version in your project settings, and ensure all dependencies are linked correctly.
+   Set the images and colors you desire!
 
    ![Image Loading](img/3.png)
 
@@ -42,12 +42,12 @@ To set up and use this tool, follow the steps below:
 
 ## 🔧 Compatibility
 
-This codebase is based on Unity version 6000.1.0b2, tested with Unity 2021. In theory, **MonoHook** should support any Unity version compatible with Mono.
+This codebase is based on Unity version 6000.1.0b2, tested with Unity 2021. In theory, **MonoHook** should support any Unity version compatible with it
 
 ---
 
 ## 🔮 Future Plans
-We aim to enhance the tool to support additional editor UI modifications, including:
+i aim to enhance the tool to support additional editor UI modifications, including:
 
 - More hooks for advanced customization.
 - Enhanced compatibility with newer Unity versions.
